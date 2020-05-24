@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 [RequireComponent(typeof(Tilemap3d))]
 
@@ -32,13 +31,17 @@ public class Tilemap3dMouse : MonoBehaviour
             _tileSelectorRenderer.enabled = true;
 
             int col = Mathf.FloorToInt(hitInfo.point.x / _tilemap3d.tileSize);
-            int row = Mathf.FloorToInt(hitInfo.point.z / _tilemap3d.tileSize);
-            // Debug.Log("You hovered tile: " + col + ", " + row);
+            // Unity’s z axis is inverted from the top to bottom tile flow.
+            int rowInverted = Mathf.FloorToInt(hitInfo.point.z / _tilemap3d.tileSize);
 
             currentTileCoord.x = col;
-            currentTileCoord.z = row;
+            currentTileCoord.z = rowInverted; // When dealing with the coordinates (for the z axis), use the inverted row.
 
             tileSelector.transform.position = currentTileCoord;
+
+            // When dealing with tiles, invert rowInverted to get the correct row.
+            //int row = invertRow(rowInverted);
+            //Debug.Log("You hovered tile: " + col + ", " + row);
         }
         else
         {
@@ -49,8 +52,17 @@ public class Tilemap3dMouse : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && mouseOverTilemap == 1)
         {
             int col = Mathf.FloorToInt(hitInfo.point.x / _tilemap3d.tileSize);
-            int row = Mathf.FloorToInt(hitInfo.point.z / _tilemap3d.tileSize);
-            Debug.Log("You selected tile: " + col + ", " + row);
+            // Unity’s z axis is inverted from the top to bottom tile flow.
+            int rowInverted = Mathf.FloorToInt(hitInfo.point.z / _tilemap3d.tileSize);
+
+            // When dealing with tiles, invert rowInverted to get the correct row.
+            int row = invertRow(rowInverted);
+            Debug.Log("You selected tile: " + col + ", " + row + " - " + MapInfo.mapData[col, row].name);
         }
+    }
+
+    int invertRow(int rowInverted)
+    {
+        return (rowInverted * -1) - 1;
     }
 }

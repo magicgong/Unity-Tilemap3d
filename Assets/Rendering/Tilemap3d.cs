@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 [ExecuteInEditMode]
@@ -13,7 +9,7 @@ using Random = UnityEngine.Random;
 public class Tilemap3d : MonoBehaviour
 {
     public int columns = 16;
-    public int rows = 10;
+    public int rows = 12;
     public float tileSize = 1.0f;
     public int tileResolution = 32;
     public Texture2D tileAtlas;
@@ -35,9 +31,9 @@ public class Tilemap3d : MonoBehaviour
 
         Color[][] tiles = new Color[numberOfTilesInTileAtlas][];
 
-        for (int row = 0; row < numberOfRowsInTileAtlas; row++)
+        for (int row = 0; row < numberOfRowsInTileAtlas; ++row)
         {
-            for (int col = 0; col < numberOfColumnsInTileAtlas; col++)
+            for (int col = 0; col < numberOfColumnsInTileAtlas; ++col)
             {
                 tiles[row * numberOfColumnsInTileAtlas + col] = tileAtlas.GetPixels(col * tileResolution, row * tileResolution, tileResolution, tileResolution);
             }
@@ -57,9 +53,10 @@ public class Tilemap3d : MonoBehaviour
 
         Color[][] tiles = SliceTileAltasIntoTiles();
 
-        for(int row = 0; row < rows; row++)
+        // To achieve a left to right, top to bottom tile flow count from the number of rows down to 0. The inner loop counts from 0 up to the number of columns.
+        for (int row = rows - 1; row > -1; --row)
         {
-            for (int col = 0; col < columns; col++)
+            for (int col = 0; col < columns; ++col)
             {
                 Color[] tile = tiles[mapInfo.GetTileTypeId(col, row)];
                 texture.SetPixels(col * tileResolution, row * tileResolution, tileResolution, tileResolution, tile);
@@ -91,7 +88,7 @@ public class Tilemap3d : MonoBehaviour
         int col, row;
 
         // Create vertices, normals, uv's
-        for (row = 0; row < verticesRows; ++row)
+        for (row = verticesRows - 1; row > -1; --row)
         {
             for (col = 0; col < verticesColumns; ++col)
             {
@@ -104,7 +101,7 @@ public class Tilemap3d : MonoBehaviour
         }
 
         // Create triangles
-        for (row = 0; row < rows; ++row)
+        for (row = rows - 1; row > -1; --row)
         {
             for (col = 0; col < columns; ++col)
             {

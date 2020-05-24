@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Security.Policy;
-
-public class MapInfo
+﻿public class MapInfo
 {
     int columns;
     int rows;
 
-    TileInfo[,] mapData;
+    public static TileInfo[,] mapData;
 
     // Example tile types and tile data. This may vary depending on the type of game and desired tilemap.
     enum TileType
@@ -30,9 +26,9 @@ public class MapInfo
 
         mapData = new TileInfo[columns, rows];
 
-        for (int row = 0; row < rows; row++)
+        for (int row = rows - 1; row > -1; --row)
         {
-            for (int col = 0; col < columns; col++)
+            for (int col = 0; col < columns; ++col)
             {
                 mapData[col, row] = darkTile;
             }
@@ -59,12 +55,12 @@ public class MapInfo
 
     public TileInfo GetTile(int col, int row)
     {
-        return mapData[col, row];
+        return mapData[col, rows - 1 - row];
     }
 
     public int GetTileTypeId(int col, int row)
     {
-        return mapData[col, row].typeId;
+        return mapData[col, rows - 1 - row].typeId;
     }
 
 }
